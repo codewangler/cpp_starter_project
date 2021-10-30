@@ -2,6 +2,7 @@
 # Edit at https://www.gitignore.io/?templates=c++,cmake,python,opencv,visualstudiocode
 **/*build/
 **/*results/
+**/tests/data/
 **/*.profdata
 **/*.profraw
 **/*bin/
@@ -182,5 +183,8 @@ dmypy.json
 ### VisualStudioCode Patch ###
 # Ignore all local history of files
 .history
+
+### RD: Miscelaneous stuff ###
+*.png
 
 # End of https://www.gitignore.io/api/c++,cmake,python,opencv,visualstudiocode

@@ -12,5 +12,7 @@ Checks: '*,
 -cppcoreguidelines-pro-bounds-pointer-arithmetic,
 -cppcoreguidelines-avoid-magic-numbers,
 -readability-magic-numbers,
+-llvmlibc-restrict-system-libc-headers,
+-llvmlibc-callee-namespace,
 '
 HeaderFilterRegex: '.*'
