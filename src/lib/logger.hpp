@@ -66,11 +66,13 @@ class Logger {
 
   static void SetFileSinkPath(const std::string &filepath);
 
+  static std::string GetTimestamp();
+
  private:
   // Log line prefixes.
-  const std::string kErrorPrefix = "[Error] ";
-  const std::string kWarningPrefix = "[Warning] ";
-  const std::string kInfoPrefix = "[Info] ";
+  const std::string kErrorPrefix = "[Err] ";
+  const std::string kWarningPrefix = "[Wrn] ";
+  const std::string kInfoPrefix = "[Inf] ";
 
   // Pointers to the different possible sinks.
   std::shared_ptr<rtb_h::LogSink> p_cout_sink_;
@@ -94,42 +96,42 @@ class Logger {
   template <typename T>
   void LogErrorImpl(const T &value) const {
     std::ostringstream buffer;
-    buffer << kErrorPrefix << value;
+    buffer << kErrorPrefix << GetTimestamp() << value;
     p_error_->Log(buffer.str());
   }
 
   template <typename T>
   void LogErrorImpl(const T &value, const std::string &message) const {
     std::ostringstream buffer;
-    buffer << kErrorPrefix << message << ": " << value;
+    buffer << kErrorPrefix << GetTimestamp() << message << ": " << value;
     p_error_->Log(buffer.str());
   }
 
   template <typename T>
   void LogWarningImpl(const T &value) const {
     std::ostringstream buffer;
-    buffer << kWarningPrefix << value;
+    buffer << kWarningPrefix << GetTimestamp() << value;
     p_warning_->Log(buffer.str());
   }
 
   template <typename T>
   void LogWarningImpl(const T &value, const std::string &message) const {
     std::ostringstream buffer;
-    buffer << kWarningPrefix << message << ": " << value;
+    buffer << kWarningPrefix << GetTimestamp() << message << ": " << value;
     p_warning_->Log(buffer.str());
   }
 
   template <typename T>
   void LogInfoImpl(const T &value) const {
     std::ostringstream buffer;
-    buffer << kInfoPrefix << value;
+    buffer << kInfoPrefix << GetTimestamp() << value;
     p_info_->Log(buffer.str());
   }
 
   template <typename T>
   void LogInfoImpl(const T &value, const std::string &message) const {
     std::ostringstream buffer;
-    buffer << kInfoPrefix << message << ": " << value;
+    buffer << kInfoPrefix << GetTimestamp() << message << ": " << value;
     p_info_->Log(buffer.str());
   }
 

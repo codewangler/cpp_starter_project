@@ -5,6 +5,11 @@
 
 #include "logger.hpp"
 
+#include <chrono>
+#include <iomanip>
+#include <mutex>
+#include <sstream>
+#include <thread>
 #include <utility>
 
 namespace rtb {
@@ -74,5 +79,18 @@ void Logger::SetSink(SinkType type, std::shared_ptr<rtb_h::LogSink>* p_sink) {
     default:
       break;
   }
+}
+
+std::string Logger::GetTimestamp() {
+  auto in_time_t =
+      std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+  std::ostringstream ss;
+
+  // Because std::localtime is not thread-safe protrct access with a mutex.
+  std::mutex localtime_mutex;
+  const std::lock_guard<std::mutex> lock(localtime_mutex);
+
+  ss << std::put_time(std::localtime(&in_time_t), "%Y-%m-%d %X ");
+  return ss.str();
 }
 }  // namespace rtb

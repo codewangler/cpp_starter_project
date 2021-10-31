@@ -14,8 +14,9 @@ namespace rtb_h {
  */
 class LogSink {
  public:
-  virtual void Log(const std::string &line) = 0;
   virtual ~LogSink() = default;
+
+  virtual void Log(const std::string &line) = 0;
 };
 
 /**
