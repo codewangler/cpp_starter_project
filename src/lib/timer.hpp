@@ -18,10 +18,11 @@ class Timer {
   Timer operator=(const Timer &&rhs) = delete;
   ~Timer();
 
- private:
-  void Stop();
-  std::chrono::time_point<std::chrono::high_resolution_clock> start_time_point_;
+  void Reset();
+  void Mark();
 
+ private:
+  std::chrono::time_point<std::chrono::high_resolution_clock> start_time_point_;
   std::string tag_;
 };
 }  // namespace rtb

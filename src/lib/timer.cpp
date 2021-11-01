@@ -11,18 +11,29 @@
 #include "logger.hpp"
 
 namespace rtb {
-Timer::Timer(std::string tag) : tag_(std::move(tag)) {
+Timer::Timer(std::string tag) : tag_(std::move(tag)) { Reset(); }
+
+Timer::~Timer() { Mark(); }
+
+void Timer::Reset() {
   start_time_point_ = std::chrono::high_resolution_clock::now();
 }
 
-Timer::~Timer() { Stop(); }
-
-void Timer::Stop() {
+void Timer::Mark() {
   auto stop_time_point = std::chrono::high_resolution_clock::now();
-  std::chrono::duration<double, std::milli> duration =
-      stop_time_point - start_time_point_;
+  auto start =
+      std::chrono::time_point_cast<std::chrono::microseconds>(start_time_point_)
+          .time_since_epoch()
+          .count();
+  auto stop =
+      std::chrono::time_point_cast<std::chrono::microseconds>(stop_time_point)
+          .time_since_epoch()
+          .count();
+  auto duration = stop - start;
+  double ms = static_cast<double>(duration) * 0.001;
+
   std::ostringstream ss;
-  ss << duration.count() << "ms";
+  ss << ms << "ms";
   if (tag_.empty()) {
     rtb::Logger::LogInfo(ss.str());
   } else {

@@ -6,6 +6,7 @@
 #include <gtest/gtest.h>
 
 #include <filesystem>
+#include <thread>
 
 #include "lib/toolbox.hpp"
 
@@ -24,7 +25,7 @@ TEST(TestLogger, LogErrorInt) {
   testing::internal::CaptureStderr();
   rtb::Logger::LogError(10);
   std::string output = testing::internal::GetCapturedStderr();
-  ASSERT_THAT(output, testing::HasSubstr("Err"));
+  ASSERT_THAT(output, testing::HasSubstr("Error"));
   ASSERT_THAT(output, testing::HasSubstr("10"));
 }
 
@@ -32,7 +33,7 @@ TEST(TestLogger, LogErrorIntWithMessage) {
   testing::internal::CaptureStderr();
   rtb::Logger::LogError(10, "Message");
   std::string output = testing::internal::GetCapturedStderr();
-  ASSERT_THAT(output, testing::HasSubstr("Err"));
+  ASSERT_THAT(output, testing::HasSubstr("Error"));
   ASSERT_THAT(output, testing::HasSubstr("Message"));
   ASSERT_THAT(output, testing::HasSubstr("10"));
 }
@@ -42,7 +43,7 @@ TEST(TestLogger, LogErrorLoggableType) {
   Loggable l("loggable type", 666);
   rtb::Logger::LogError(l);
   std::string output = testing::internal::GetCapturedStderr();
-  ASSERT_THAT(output, testing::HasSubstr("Err"));
+  ASSERT_THAT(output, testing::HasSubstr("Error"));
   ASSERT_THAT(output, testing::HasSubstr("loggable type"));
   ASSERT_THAT(output, testing::HasSubstr("666"));
 }
@@ -52,7 +53,7 @@ TEST(TestLogger, LogErrorLoggableTypeWithMessage) {
   Loggable l("loggable type", 666);
   rtb::Logger::LogError(l, "Message");
   std::string output = testing::internal::GetCapturedStderr();
-  ASSERT_THAT(output, testing::HasSubstr("Err"));
+  ASSERT_THAT(output, testing::HasSubstr("Error"));
   ASSERT_THAT(output, testing::HasSubstr("Message"));
   ASSERT_THAT(output, testing::HasSubstr("loggable type"));
   ASSERT_THAT(output, testing::HasSubstr("666"));
@@ -62,7 +63,7 @@ TEST(TestLogger, LogWarningInt) {
   testing::internal::CaptureStderr();
   rtb::Logger::LogWarning(10);
   std::string output = testing::internal::GetCapturedStderr();
-  ASSERT_THAT(output, testing::HasSubstr("Wrn"));
+  ASSERT_THAT(output, testing::HasSubstr("Warning"));
   ASSERT_THAT(output, testing::HasSubstr("10"));
 }
 
@@ -70,7 +71,7 @@ TEST(TestLogger, LogWarningIntWithMessage) {
   testing::internal::CaptureStderr();
   rtb::Logger::LogWarning(10, "Message");
   std::string output = testing::internal::GetCapturedStderr();
-  ASSERT_THAT(output, testing::HasSubstr("Wrn"));
+  ASSERT_THAT(output, testing::HasSubstr("Warning"));
   ASSERT_THAT(output, testing::HasSubstr("Message"));
   ASSERT_THAT(output, testing::HasSubstr("10"));
 }
@@ -80,7 +81,7 @@ TEST(TestLogger, LogWarningLoggableType) {
   Loggable l("loggable type", 666);
   rtb::Logger::LogWarning(l);
   std::string output = testing::internal::GetCapturedStderr();
-  ASSERT_THAT(output, testing::HasSubstr("Wrn"));
+  ASSERT_THAT(output, testing::HasSubstr("Warning"));
   ASSERT_THAT(output, testing::HasSubstr("loggable type"));
   ASSERT_THAT(output, testing::HasSubstr("666"));
 }
@@ -90,7 +91,7 @@ TEST(TestLogger, LogWarningLoggableTypeWithMessage) {
   Loggable l("loggable type", 666);
   rtb::Logger::LogWarning(l, "Message");
   std::string output = testing::internal::GetCapturedStderr();
-  ASSERT_THAT(output, testing::HasSubstr("Wrn"));
+  ASSERT_THAT(output, testing::HasSubstr("Warning"));
   ASSERT_THAT(output, testing::HasSubstr("Message"));
   ASSERT_THAT(output, testing::HasSubstr("loggable type"));
   ASSERT_THAT(output, testing::HasSubstr("666"));
@@ -100,7 +101,7 @@ TEST(TestLogger, LogInfoInt) {
   testing::internal::CaptureStdout();
   rtb::Logger::LogInfo(10);
   std::string output = testing::internal::GetCapturedStdout();
-  ASSERT_THAT(output, testing::HasSubstr("Inf"));
+  ASSERT_THAT(output, testing::HasSubstr("Info"));
   ASSERT_THAT(output, testing::HasSubstr("10"));
 }
 
@@ -108,7 +109,7 @@ TEST(TestLogger, LogInfoIntWithMessage) {
   testing::internal::CaptureStdout();
   rtb::Logger::LogInfo(10, "Message");
   std::string output = testing::internal::GetCapturedStdout();
-  ASSERT_THAT(output, testing::HasSubstr("Inf"));
+  ASSERT_THAT(output, testing::HasSubstr("Info"));
   ASSERT_THAT(output, testing::HasSubstr("Message"));
   ASSERT_THAT(output, testing::HasSubstr("10"));
 }
@@ -118,7 +119,7 @@ TEST(TestLogger, LogInfoLoggableType) {
   Loggable l("loggable type", 666);
   rtb::Logger::LogInfo(l);
   std::string output = testing::internal::GetCapturedStdout();
-  ASSERT_THAT(output, testing::HasSubstr("Inf"));
+  ASSERT_THAT(output, testing::HasSubstr("Info"));
   ASSERT_THAT(output, testing::HasSubstr("loggable type"));
   ASSERT_THAT(output, testing::HasSubstr("666"));
 }
@@ -128,7 +129,7 @@ TEST(TestLogger, LogInfoLoggableTypeWithMessage) {
   Loggable l("loggable type", 666);
   rtb::Logger::LogInfo(l, "Message");
   std::string output = testing::internal::GetCapturedStdout();
-  ASSERT_THAT(output, testing::HasSubstr("Inf"));
+  ASSERT_THAT(output, testing::HasSubstr("Info"));
   ASSERT_THAT(output, testing::HasSubstr("Message"));
   ASSERT_THAT(output, testing::HasSubstr("loggable type"));
   ASSERT_THAT(output, testing::HasSubstr("666"));
@@ -139,7 +140,7 @@ TEST(TestLogger, SetSinkCout) {
   testing::internal::CaptureStdout();
   rtb::Logger::LogError(10);
   std::string output = testing::internal::GetCapturedStdout();
-  ASSERT_THAT(output, testing::HasSubstr("Err"));
+  ASSERT_THAT(output, testing::HasSubstr("Error"));
   ASSERT_THAT(output, testing::HasSubstr("10"));
 }
 
@@ -176,7 +177,7 @@ TEST(TestLogger, ChangeLogFile) {
   rtb::Logger::SetErrorSink(rtb::Logger::kSinkCout);
   rtb::Logger::SetFileSinkPath(log_filename);
   rtb::Logger::SetErrorSink(rtb::Logger::kSinkFile);
-  rtb::Logger::LogError("Err");
+  rtb::Logger::LogError("Error");
 
   ASSERT_TRUE(std::filesystem::exists(log_filename));
 }
@@ -200,4 +201,15 @@ TEST(TestLogger, ChangeLogFile2) {
 
   ASSERT_TRUE(std::filesystem::exists(log_filename));
   ASSERT_TRUE(std::filesystem::exists(log_filename2));
+}
+TEST(TestTimer, TimerTagged) {
+  using namespace std::literals::chrono_literals;
+  rtb::Timer t("t1");
+  std::this_thread::sleep_for(1s);
+  testing::internal::CaptureStdout();
+  t.Mark();
+  std::string output = testing::internal::GetCapturedStdout();
+  ASSERT_THAT(output, testing::HasSubstr("t1"));
+  ASSERT_THAT(output, testing::HasSubstr("ms"));
+  testing::internal::CaptureStdout();
 }

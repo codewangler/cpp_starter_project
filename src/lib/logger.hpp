@@ -70,9 +70,9 @@ class Logger {
 
  private:
   // Log line prefixes.
-  const std::string kErrorPrefix = "[Err] ";
-  const std::string kWarningPrefix = "[Wrn] ";
-  const std::string kInfoPrefix = "[Inf] ";
+  const std::string kErrorPrefix = "[Error  ] ";
+  const std::string kWarningPrefix = "[Warning] ";
+  const std::string kInfoPrefix = "[Info   ] ";
 
   // Pointers to the different possible sinks.
   std::shared_ptr<rtb_h::LogSink> p_cout_sink_;

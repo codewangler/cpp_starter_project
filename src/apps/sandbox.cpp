@@ -19,6 +19,7 @@ int main() {
 
   rtb::Timer t;
   rtb::Timer t2("t2");
+  rtb::Timer t3("t3");
 
   rtb::Logger::LogError(99);
   rtb::Logger::LogError(0, "message");
@@ -27,6 +28,8 @@ int main() {
   rtb::Logger::SetErrorSink(rtb::Logger::kSinkCout);
   rtb::Logger::LogError(2, "message");
 
+  t3.Mark();
+  
   rtb::Logger::SetFileSinkPath("foo.log");
   rtb::Logger::SetFileSinkPath("bar.log");
   rtb::Logger::SetErrorSink(rtb::Logger::kSinkFile);
