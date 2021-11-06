@@ -2,7 +2,7 @@
 # @author    Ignacio Vizzo     [ivizzo@uni-bonn.de]
 #
 # Copyright (c) 2020 Ignacio Vizzo, all rights reserved
-add_library(toolbox logger.cpp log_sink.cpp timer.cpp)
+add_library(toolbox logger.cpp log_sink.cpp timer.cpp instrumentor.cpp)
 
 # Install headers
 install(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
