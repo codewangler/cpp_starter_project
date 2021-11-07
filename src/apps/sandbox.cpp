@@ -8,8 +8,18 @@
 #include <iomanip>
 #include <sstream>
 
-#define PROFILING 1
 #include "lib/toolbox.hpp"
+
+#define PROFILING 1
+
+//  Useful macros for using the Instrumentor profiler.
+#if PROFILING
+#define PROFILE_SCOPE(name) rtb::InstrumentationTimer timer##__LINE__(name)
+#define PROFILE_FUNCTION() PROFILE_SCOPE(__PRETTY_FUNCTION__)
+#else
+#define PROFILE_SCOPE(name)
+#define PROFILE_FUNCTION()
+#endif
 
 void PrintFunction() {
   PROFILE_FUNCTION();

@@ -12,15 +12,6 @@
 #include <string>
 #include <thread>
 
-// Useful macros for using the Instrumentor profiler.
-#if PROFILING
-#define PROFILE_SCOPE(name) rtb::InstrumentationTimer timer##__LINE__(name)
-#define PROFILE_FUNCTION() PROFILE_SCOPE(__PRETTY_FUNCTION__)
-#else
-#define PROFILE_SCOPE(name)
-#define PROFILE_FUNCTION()
-#endif
-
 namespace rtb_h {
 
 struct ProfileResult {
