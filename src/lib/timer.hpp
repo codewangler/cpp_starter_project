@@ -19,7 +19,7 @@ class Timer {
   ~Timer();
 
   void Reset();
-  void Mark();
+  double Mark();
 
  private:
   std::chrono::time_point<std::chrono::high_resolution_clock> start_time_point_;

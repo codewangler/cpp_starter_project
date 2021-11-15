@@ -19,7 +19,7 @@ void Timer::Reset() {
   start_time_point_ = std::chrono::high_resolution_clock::now();
 }
 
-void Timer::Mark() {
+double Timer::Mark() {
   auto stop_time_point = std::chrono::high_resolution_clock::now();
   auto start =
       std::chrono::time_point_cast<std::chrono::microseconds>(start_time_point_)
@@ -30,14 +30,16 @@ void Timer::Mark() {
           .time_since_epoch()
           .count();
   auto duration = stop - start;
-  double ms = static_cast<double>(duration) * 0.001;
+  auto micro_seconds = static_cast<double>(duration);
 
   std::ostringstream ss;
-  ss << ms << "ms";
+  ss << micro_seconds * 0.001 << "ms";
   if (tag_.empty()) {
     rtb::Logger::LogInfo(ss.str());
   } else {
     rtb::Logger::LogInfo(ss.str(), tag_);
   }
+
+  return micro_seconds;
 }
 }  // namespace rtb
