@@ -71,9 +71,9 @@ int main() {
   rtb::Logger::LogWarning(99, "Danger!");
   rtb::Logger::LogInfo(222, "Info"); */
 
-  rtb::Instrumentor::GetInstance().BeginSession("Profile");
+  /* rtb::Instrumentor::GetInstance().BeginSession("Profile");
   RunBenchmarks();
-  rtb::Instrumentor::GetInstance().EndSession();
+  rtb::Instrumentor::GetInstance().EndSession(); */
 
   return EXIT_SUCCESS;
 }
