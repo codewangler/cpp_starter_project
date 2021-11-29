@@ -7,3 +7,4 @@
 #include "logger.hpp"
 #include "timer.hpp"
 #include "instrumentor.hpp"
+#include "clarg_parser.hpp"

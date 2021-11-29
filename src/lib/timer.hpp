@@ -13,9 +13,9 @@ class Timer {
  public:
   explicit Timer(std::string tag = "");
   Timer(const Timer &rhs) = delete;
-  Timer operator=(const Timer &rhs) = delete;
+  Timer& operator=(const Timer &) = delete;
   Timer(const Timer &&rhs) = delete;
-  Timer operator=(const Timer &&rhs) = delete;
+  Timer& operator=(const Timer &&) = delete;
   ~Timer();
 
   void Reset();

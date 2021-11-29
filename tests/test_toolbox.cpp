@@ -16,12 +16,12 @@ struct Loggable {
   int i_;
 };
 
-std::ostream &operator<<(std::ostream &os, const Loggable &object) {
+std::ostream& operator<<(std::ostream& os, const Loggable& object) {
   os << object.str_ << ": " << object.i_;
   return os;
 }
 
-TEST(TestLogger, LogErrorInt) {
+/* TEST(TestLogger, LogErrorInt) {
   testing::internal::CaptureStderr();
   rtb::Logger::LogError(10);
   std::string output = testing::internal::GetCapturedStderr();
@@ -211,5 +211,140 @@ TEST(TestTimer, TimerTagged) {
   std::string output = testing::internal::GetCapturedStdout();
   ASSERT_THAT(output, testing::HasSubstr("t1"));
   ASSERT_THAT(output, testing::HasSubstr("ms"));
-  testing::internal::CaptureStdout();
+} */
+
+TEST(TestClargParser, AddFlag) {
+  rtb::ClargParser* parser = rtb::ClargParser::GetInstance();
+  parser->AddFlagToSearchList("b");
+  parser->AddFlagToSearchList("v");
+  ASSERT_TRUE(parser->GetFlagSearchListCount() == 2);
+}
+
+TEST(TestClargParser, AddDuplicateFlag) {
+  rtb::ClargParser* parser = rtb::ClargParser::GetInstance();
+  parser->AddFlagToSearchList("b");
+  parser->AddFlagToSearchList("v");
+  parser->AddFlagToSearchList("b");
+  ASSERT_TRUE(parser->GetFlagSearchListCount() == 2);
+}
+
+TEST(TestClargParser, ParseFoundFlag) {
+  rtb::ClargParser* parser = rtb::ClargParser::GetInstance();
+  parser->AddFlagToSearchList("b");
+  parser->AddFlagToSearchList("v");
+
+  char first[]{"app name"};
+  char second[]{"-b"};
+  char third[]{"-d"};
+  char* argv[3] {first, second, third};
+
+  parser->Parse(3, argv);
+
+  rtb::ClargFlag* flag_ptr = parser->GetFlag("b");
+  ASSERT_TRUE(flag_ptr != nullptr);
+  ASSERT_TRUE(flag_ptr->found());
+  ASSERT_TRUE(flag_ptr->value());
+}
+
+TEST(TestClargParser, ParseNotFoundFlag) {
+  rtb::ClargParser* parser = rtb::ClargParser::GetInstance();
+  parser->AddFlagToSearchList("b");
+  parser->AddFlagToSearchList("v");
+
+  char first[]{"app name"};
+  char second[]{"-b"};
+  char third[]{"-d"};
+  char* argv[3]{first, second, third};
+
+  parser->Parse(3, argv);
+
+  rtb::ClargFlag* flag_ptr = parser->GetFlag("v");
+  ASSERT_TRUE(flag_ptr != nullptr);
+  ASSERT_FALSE(flag_ptr->found());
+  ASSERT_FALSE(flag_ptr->value());
+}
+
+TEST(TestClargParser, ParseFlagNotInSearchList) {
+  rtb::ClargParser* parser = rtb::ClargParser::GetInstance();
+  parser->AddFlagToSearchList("b");
+  parser->AddFlagToSearchList("v");
+
+  char first[]{"app name"};
+  char second[]{"-b"};
+  char third[]{"-d"};
+  char* argv[3]{first, second, third};
+
+  parser->Parse(3, argv);
+
+  rtb::ClargFlag* flag_ptr = parser->GetFlag("d");
+  ASSERT_TRUE(flag_ptr == nullptr);
+}
+
+TEST(TestClargParser, AddParam) {
+  rtb::ClargParser* parser = rtb::ClargParser::GetInstance();
+  parser->AddParamToSearchList("width");
+  parser->AddParamToSearchList("height");
+  ASSERT_TRUE(parser->GetParamSearchListCount() == 2);
+}
+
+TEST(TestClargParser, AddDuplicateParam) {
+  rtb::ClargParser* parser = rtb::ClargParser::GetInstance();
+  parser->AddParamToSearchList("width");
+  parser->AddParamToSearchList("height");
+  parser->AddParamToSearchList("width");
+  ASSERT_TRUE(parser->GetParamSearchListCount() == 2);
+}
+
+TEST(TestClargParser, ParseFoundParam) {
+  rtb::ClargParser* parser = rtb::ClargParser::GetInstance();
+  parser->AddParamToSearchList("width");
+  parser->AddParamToSearchList("height");
+
+  char first[]{"app name"};
+  char second[]{"-width=500"};
+  char third[]{"-height=600"};
+  char* argv[3]{first, second, third};
+
+  parser->Parse(3, argv);
+
+  rtb::ClargParam* flag_ptr = parser->GetParam("width");
+  ASSERT_TRUE(flag_ptr != nullptr);
+  ASSERT_TRUE(flag_ptr->found());
+  ASSERT_STREQ(flag_ptr->value().c_str(), "500");
+}
+
+TEST(TestClargParser, ParseNotFoundParam) {
+  rtb::ClargParser* parser = rtb::ClargParser::GetInstance();
+  parser->AddParamToSearchList("width");
+  parser->AddParamToSearchList("height");
+  parser->AddParamToSearchList("size");
+
+  char first[]{"app name"};
+  char second[]{"-width=500"};
+  char third[]{"-height=600"};
+  char* argv[3]{first, second, third};
+
+  parser->Parse(3, argv);
+
+  rtb::ClargParam* flag_ptr = parser->GetParam("size");
+  ASSERT_TRUE(flag_ptr != nullptr);
+  ASSERT_FALSE(flag_ptr->found());
+  ASSERT_STREQ(flag_ptr->value().c_str(), "");
+}
+
+TEST(TestClargParser, ParseParamNotInSearchList) {
+  rtb::ClargParser* parser = rtb::ClargParser::GetInstance();
+  parser->AddParamToSearchList("width");
+  parser->AddParamToSearchList("height");
+  parser->AddParamToSearchList("size");
+
+  char first[]{"app name"};
+  char second[]{"-width=500"};
+  char third[]{"-height=600"};
+  char* argv[3]{first, second, third};
+
+  parser->Parse(3, argv);
+
+  rtb::ClargParam* flag_ptr = parser->GetParam("xpto");
+  ASSERT_TRUE(flag_ptr == nullptr);
 }

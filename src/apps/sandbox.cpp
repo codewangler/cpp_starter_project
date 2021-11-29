@@ -44,7 +44,7 @@ void RunBenchmarks() {
   a.join();
 }
 
-int main() {
+int main(int argc, char* argv[]) {
   /* rtb::Timer t;
   rtb::Timer t2("t2");
   rtb::Timer t3("t3");
@@ -74,6 +74,9 @@ int main() {
   /* rtb::Instrumentor::GetInstance().BeginSession("Profile");
   RunBenchmarks();
   rtb::Instrumentor::GetInstance().EndSession(); */
+
+  rtb::ClargParser* parser = rtb::ClargParser::GetInstance();
+  parser->Parse(argc, argv);
 
   return EXIT_SUCCESS;
 }

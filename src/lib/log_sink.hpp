@@ -54,10 +54,10 @@ class LogSinkFile : public LogSink {
  public:
   LogSinkFile() = delete;
   explicit LogSinkFile(std::string filepath);
-  LogSinkFile(const LogSinkFile& rhs) = delete;
-  LogSinkFile operator=(const LogSinkFile &rhs) = delete;
-  LogSinkFile(const LogSinkFile &&rhs) = delete;
-  LogSinkFile operator=(const LogSinkFile &&rhs) = delete;
+  LogSinkFile(const LogSinkFile&) = delete;
+  LogSinkFile &operator=(const LogSinkFile &) = delete;
+  LogSinkFile(const LogSinkFile &&) = delete;
+  LogSinkFile &operator=(const LogSinkFile &&) = delete;
   ~LogSinkFile() override;
   void Log(const std::string &line) override;
   void SetFilePath(const std::string &filepath);

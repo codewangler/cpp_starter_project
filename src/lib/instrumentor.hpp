@@ -54,9 +54,9 @@ class InstrumentationTimer {
         stopped_(false) {}
   ~InstrumentationTimer();
   InstrumentationTimer(const InstrumentationTimer& rhs) = delete;
-  InstrumentationTimer operator=(const InstrumentationTimer& rhs) = delete;
+  InstrumentationTimer &operator=(const InstrumentationTimer&) = delete;
   InstrumentationTimer(const InstrumentationTimer&& rhs) = delete;
-  InstrumentationTimer operator=(const InstrumentationTimer&& rhs) = delete;
+  InstrumentationTimer &operator=(const InstrumentationTimer&&) = delete;
   void Stop();
 
  private:
