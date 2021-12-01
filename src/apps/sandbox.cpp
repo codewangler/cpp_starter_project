@@ -76,7 +76,12 @@ int main(int argc, char* argv[]) {
   rtb::Instrumentor::GetInstance().EndSession(); */
 
   rtb::ClargParser* parser = rtb::ClargParser::GetInstance();
+
+  parser->AddParamToSearchList("angle", rtb::ClargParam::ParamType::kInt);
   parser->Parse(argc, argv);
+  rtb::ClargParam* p = parser->GetParam("angle");
+
+  rtb::Logger::LogInfo(p->raw_value());
 
   return EXIT_SUCCESS;
 }
