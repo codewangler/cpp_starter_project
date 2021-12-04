@@ -21,7 +21,7 @@ std::ostream& operator<<(std::ostream& os, const Loggable& object) {
   return os;
 }
 
-/* TEST(TestLogger, LogErrorInt) {
+TEST(TestLogger, LogErrorInt) {
   testing::internal::CaptureStderr();
   rtb::Logger::LogError(10);
   std::string output = testing::internal::GetCapturedStderr();
@@ -211,7 +211,7 @@ TEST(TestTimer, TimerTagged) {
   std::string output = testing::internal::GetCapturedStdout();
   ASSERT_THAT(output, testing::HasSubstr("t1"));
   ASSERT_THAT(output, testing::HasSubstr("ms"));
-} */
+}
 
 TEST(TestClargParser, AddFlags) {
   rtb::ClargParser* parser = rtb::ClargParser::GetInstance();

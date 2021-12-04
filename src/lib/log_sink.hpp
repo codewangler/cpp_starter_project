@@ -8,6 +8,8 @@
 #include <iostream>
 
 namespace rtb_h {
+enum MessageType { kInfo, kWarning, kError };
+
 /**
  * @brief Abstract class for log sinks.
  *
@@ -16,7 +18,7 @@ class LogSink {
  public:
   virtual ~LogSink() = default;
 
-  virtual void Log(const std::string &line) = 0;
+  virtual void Log(const std::string& message, MessageType message_type) = 0;
 };
 
 /**
@@ -25,7 +27,7 @@ class LogSink {
  */
 class LogSinkCout : public LogSink {
  public:
-  void Log(const std::string &line) override;
+  void Log(const std::string& message, MessageType message_type) override;
 };
 
 /**
@@ -34,7 +36,7 @@ class LogSinkCout : public LogSink {
  */
 class LogSinkCerr : public LogSink {
  public:
-  void Log(const std::string &line) override;
+  void Log(const std::string& message, MessageType message_type) override;
 };
 
 /**
@@ -43,7 +45,7 @@ class LogSinkCerr : public LogSink {
  */
 class LogSinkNull : public LogSink {
  public:
-  void Log(const std::string &) override {}
+  void Log(const std::string&, MessageType) override {}
 };
 
 /**
@@ -54,13 +56,14 @@ class LogSinkFile : public LogSink {
  public:
   LogSinkFile() = delete;
   explicit LogSinkFile(std::string filepath);
-  LogSinkFile(const LogSinkFile&) = delete;
-  LogSinkFile &operator=(const LogSinkFile &) = delete;
-  LogSinkFile(const LogSinkFile &&) = delete;
-  LogSinkFile &operator=(const LogSinkFile &&) = delete;
   ~LogSinkFile() override;
-  void Log(const std::string &line) override;
-  void SetFilePath(const std::string &filepath);
+  void Log(const std::string& message, MessageType message_type) override;
+  void SetFilePath(const std::string& filepath);
+
+  LogSinkFile(const LogSinkFile&) = delete;
+  LogSinkFile& operator=(const LogSinkFile&) = delete;
+  LogSinkFile(const LogSinkFile&&) = delete;
+  LogSinkFile& operator=(const LogSinkFile&&) = delete;
 
  private:
   std::ofstream fs_;

@@ -13,6 +13,11 @@
 #include <utility>
 
 namespace rtb {
+/**
+ * @brief Construct a new Logger object.
+ * 
+ * @param file_sink_path The path to the log file.
+ */
 Logger::Logger(std::string file_sink_path)
     : p_cout_sink_(std::make_shared<rtb_h::LogSinkCout>()),
       p_cerr_sink_(std::make_shared<rtb_h::LogSinkCerr>()),
@@ -25,31 +30,76 @@ Logger::Logger(std::string file_sink_path)
   p_info_ = p_cout_sink_;
 }
 
+/**
+ * @brief Get the unique Logger instance.
+ * 
+ * @return Logger& 
+ */
 Logger& Logger::GetInstance() {
   static Logger instance("rtb.log");
   return instance;
 }
 
+/**
+ * @brief Set the error sink type.
+ * 
+ * @param type 
+ */
 void Logger::SetErrorSink(SinkType type) {
   GetInstance().SetErrorSinkImpl(type);
 }
 
+/**
+ * @brief Set the warning sink type.
+ * 
+ * @param type 
+ */
 void Logger::SetWarningSink(SinkType type) {
   GetInstance().SetWarningSinkImpl(type);
 }
 
+/**
+ * @brief Set the info sink type.
+ * 
+ * @param type 
+ */
 void Logger::SetInfoSink(SinkType type) { GetInstance().SetInfoSinkImpl(type); }
 
+/**
+ * @brief Set the error sink implementation.
+ * 
+ * @param type 
+ */
 void Logger::SetErrorSinkImpl(SinkType type) { SetSink(type, &p_error_); }
 
-void Logger::SetWarningSinkImpl(SinkType type) { SetSink(type, &p_error_); }
+/**
+ * @brief Set the warning sink implementation.
+ * 
+ * @param type 
+ */
+void Logger::SetWarningSinkImpl(SinkType type) { SetSink(type, &p_warning_); }
 
-void Logger::SetInfoSinkImpl(SinkType type) { SetSink(type, &p_error_); }
+/**
+ * @brief Set the info sink implementation.
+ * 
+ * @param type 
+ */
+void Logger::SetInfoSinkImpl(SinkType type) { SetSink(type, &p_info_); }
 
+/**
+ * @brief Set the path to the log file.
+ * 
+ * @param filepath 
+ */
 void Logger::SetFileSinkPath(const std::string& filepath) {
   GetInstance().SetFileSinkPathImpl(filepath);
 }
 
+/**
+ * @brief Set the file sink log file path implementation.
+ * 
+ * @param filepath 
+ */
 void Logger::SetFileSinkPathImpl(const std::string& filepath) {
   file_sink_path_ = filepath;
   if (p_file_sink_ != nullptr) {
@@ -60,33 +110,44 @@ void Logger::SetFileSinkPathImpl(const std::string& filepath) {
   }
 }
 
-void Logger::SetSink(SinkType type, std::shared_ptr<rtb_h::LogSink>* p_sink) {
+/**
+ * @brief Assign a sink to the sink type.
+ * 
+ * @param type      The sink type.
+ * @param sink_ptr  A pointer to the sink.
+ */
+void Logger::SetSink(SinkType type, std::shared_ptr<rtb_h::LogSink>* sink_ptr) {
   switch (type) {
     case kSinkCerr:
-      *p_sink = p_cerr_sink_;
+      *sink_ptr = p_cerr_sink_;
       break;
     case kSinkCout:
-      *p_sink = p_cout_sink_;
+      *sink_ptr = p_cout_sink_;
       break;
     case kSinkNull:
-      *p_sink = p_null_sink_;
+      *sink_ptr = p_null_sink_;
       break;
     case kSinkFile:
       if (p_file_sink_ == nullptr) {
         p_file_sink_ = std::make_shared<rtb_h::LogSinkFile>(file_sink_path_);
       }
-      *p_sink = p_file_sink_;
+      *sink_ptr = p_file_sink_;
     default:
       break;
   }
 }
 
+/**
+ * @brief Get a timestamp for the message.
+ * 
+ * @return std::string The timestamp as a formattted string.
+ */
 std::string Logger::GetTimestamp() {
   auto in_time_t =
       std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
   std::ostringstream ss;
 
-  // Because std::localtime is not thread-safe protrct access with a mutex.
+  // Because std::localtime is not thread-safe protect access with a mutex.
   std::mutex localtime_mutex;
   const std::lock_guard<std::mutex> lock(localtime_mutex);
 
