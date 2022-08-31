@@ -7,6 +7,7 @@
 #include <cmath>
 #include <iomanip>
 #include <sstream>
+#include <cassert>
 
 #include "lib/toolbox.hpp"
 
