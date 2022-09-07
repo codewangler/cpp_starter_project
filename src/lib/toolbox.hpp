@@ -8,3 +8,4 @@
 #include "timer.hpp"
 #include "instrumentor.hpp"
 #include "clarg_parser.hpp"
+#include "matrix.hpp"

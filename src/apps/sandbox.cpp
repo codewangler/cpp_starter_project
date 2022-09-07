@@ -46,7 +46,7 @@ void RunBenchmarks() {
 }
 
 int main(int argc, char* argv[]) {
-  /* rtb::Timer t;
+  rtb::Timer t;
   rtb::Timer t2("t2");
   rtb::Timer t3("t3");
 
@@ -70,11 +70,11 @@ int main(int argc, char* argv[]) {
   rtb::Logger::SetErrorSink(rtb::Logger::kSinkFile);
   rtb::Logger::LogError("This goes to yalf.log");
   rtb::Logger::LogWarning(99, "Danger!");
-  rtb::Logger::LogInfo(222, "Info"); */
+  rtb::Logger::LogInfo(222, "Info");
 
-  /* rtb::Instrumentor::GetInstance().BeginSession("Profile");
+  rtb::Instrumentor::GetInstance().BeginSession("Profile");
   RunBenchmarks();
-  rtb::Instrumentor::GetInstance().EndSession(); */
+  rtb::Instrumentor::GetInstance().EndSession();
 
   rtb::ClargParser* parser = rtb::ClargParser::GetInstance();
 

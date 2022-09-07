@@ -21,7 +21,7 @@ std::ostream& operator<<(std::ostream& os, const Loggable& object) {
   return os;
 }
 
-TEST(TestLogger, LogErrorInt) {
+/* TEST(TestLogger, LogErrorInt) {
   testing::internal::CaptureStderr();
   rtb::Logger::LogError(10);
   std::string output = testing::internal::GetCapturedStderr();
@@ -469,7 +469,8 @@ TEST(TestClargParser, LongParam) {
 
 TEST(TestClargParser, LongLongParam) {
   rtb::ClargParser* parser = rtb::ClargParser::GetInstance();
-  parser->AddParamToSearchList("longlong", rtb::ClargParam::ParamType::kLongLong);
+  parser->AddParamToSearchList("longlong",
+                               rtb::ClargParam::ParamType::kLongLong);
 
   char first[]{"app name"};
   char second[]{"-longlong=-50000"};
@@ -522,8 +523,7 @@ TEST(TestClargParser, UnsignedLongLongParam) {
 
 TEST(TestClargParser, FloatParam) {
   rtb::ClargParser* parser = rtb::ClargParser::GetInstance();
-  parser->AddParamToSearchList("float",
-                               rtb::ClargParam::ParamType::kFloat);
+  parser->AddParamToSearchList("float", rtb::ClargParam::ParamType::kFloat);
 
   char first[]{"app name"};
   char second[]{"-float=-3.1415"};
@@ -557,7 +557,8 @@ TEST(TestClargParser, DoubleParam) {
 
 TEST(TestClargParser, LongDoubleParam) {
   rtb::ClargParser* parser = rtb::ClargParser::GetInstance();
-  parser->AddParamToSearchList("longdouble", rtb::ClargParam::ParamType::kLongDouble);
+  parser->AddParamToSearchList("longdouble",
+                               rtb::ClargParam::ParamType::kLongDouble);
 
   char first[]{"app name"};
   char second[]{"-longdouble=-3.141592633333"};
@@ -607,4 +608,166 @@ TEST(TestClargParser, StringWithQuotesParam) {
   std::string value = std::get<std::string>(param_ptr->value());
   // ASSERT_STREQ(value.c_str(), "\"Roger Davies\"");
   rtb::Logger::LogInfo(value.c_str());
+} */
+
+TEST(TestMatrix, Constructor) {
+  const size_t rows = 9;
+  const size_t cols = 7;
+  rtb::Matrix m(rows, cols);
+
+  for (size_t i = 0; i < rows; i++) {
+    for (size_t j = 0; j < cols; j++) {
+      ASSERT_DOUBLE_EQ(0.0, m(i, j));
+    }
+  }
+}
+
+TEST(TestMatrix, WriteReadElements) {
+  const size_t rows = 9;
+  const size_t cols = 7;
+  rtb::Matrix m(rows, cols);
+
+  for (size_t i = 0; i < rows; i++) {
+    for (size_t j = 0; j < cols; j++) {
+      m(i, j) = static_cast<double>(i) * cols + static_cast<double>(j);
+    }
+  }
+
+  for (size_t i = 0; i < rows; i++) {
+    for (size_t j = 0; j < cols; j++) {
+      ASSERT_DOUBLE_EQ(i * cols + j, m(i, j));
+    }
+  }
+}
+
+TEST(TestMatrix, OutOfBoundsRow) {
+  const size_t rows = 9;
+  const size_t cols = 7;
+  rtb::Matrix m(rows, cols);
+
+  ASSERT_THROW(m(rows, 0) = 100, std::out_of_range);
+}
+
+TEST(TestMatrix, OutOfBoundsCol) {
+  const size_t rows = 9;
+  const size_t cols = 7;
+  rtb::Matrix m(rows, cols);
+
+  ASSERT_THROW(m(0, cols) = 100, std::out_of_range);
+}
+
+TEST(TestMatrix, CopyConstruction) {
+  const size_t rows = 9;
+  const size_t cols = 7;
+  rtb::Matrix m(rows, cols);
+
+  for (size_t i = 0; i < rows; i++) {
+    for (size_t j = 0; j < cols; j++) {
+      m(i, j) = static_cast<double>(i) * cols + static_cast<double>(j);
+    }
+  }
+
+  rtb::Matrix m2(m);
+
+  // m2 should have the same element values as m.
+  for (size_t i = 0; i < rows; i++) {
+    for (size_t j = 0; j < cols; j++) {
+      ASSERT_DOUBLE_EQ(i * cols + j, m2(i, j));
+    }
+  }
+
+  // And if we change m the elements in m2 are not affected.
+  for (size_t i = 0; i < rows; i++) {
+    for (size_t j = 0; j < cols; j++) {
+      m(i, j) = 0.0;
+    }
+  }
+  for (size_t i = 0; i < rows; i++) {
+    for (size_t j = 0; j < cols; j++) {
+      ASSERT_DOUBLE_EQ(i * cols + j, m2(i, j));
+    }
+  }
+}
+
+TEST(TestMatrix, Assignment) {
+  const size_t rows = 9;
+  const size_t cols = 7;
+  rtb::Matrix m(rows, cols);
+
+  for (size_t i = 0; i < rows; i++) {
+    for (size_t j = 0; j < cols; j++) {
+      m(i, j) = static_cast<double>(i) * cols + static_cast<double>(j);
+    }
+  }
+
+  const size_t rows2 = 11;
+  const size_t cols2 = 3;
+  rtb::Matrix m2(rows2, cols2);
+
+  for (size_t i = 0; i < rows2; i++) {
+    for (size_t j = 0; j < cols2; j++) {
+      m2(i, j) = static_cast<double>(i) * cols + static_cast<double>(j);
+    }
+  }
+
+  m2 = m;
+
+  ASSERT_EQ(m2.Rows(), m.Rows());
+  ASSERT_EQ(m2.Cols(), m.Cols());
+}
+
+TEST(TestMatrix, IsRowVector) {
+  const size_t rows = 1;
+  const size_t cols = 7;
+  rtb::Matrix m(rows, cols);
+
+  ASSERT_TRUE(m.IsRowVector());
+}
+
+TEST(TestMatrix, IsNotRowVector) {
+  const size_t rows = 2;
+  const size_t cols = 7;
+  rtb::Matrix m(rows, cols);
+
+  ASSERT_FALSE(m.IsRowVector());
+}
+
+TEST(TestMatrix, IsColVector) {
+  const size_t rows = 9;
+  const size_t cols = 1;
+  rtb::Matrix m(rows, cols);
+
+  ASSERT_TRUE(m.IsColVector());
+}
+
+TEST(TestMatrix, IsNotColVector) {
+  const size_t rows = 2;
+  const size_t cols = 7;
+  rtb::Matrix m(rows, cols);
+
+  ASSERT_FALSE(m.IsColVector());
+}
+
+TEST(TestMatrix, IsSquare) {
+  const size_t rows = 9;
+  const size_t cols = 9;
+  rtb::Matrix m(rows, cols);
+
+  ASSERT_TRUE(m.IsSquare());
+}
+
+TEST(TestMatrix, IsNotSquare) {
+  const size_t rows = 9;
+  const size_t cols = 7;
+  rtb::Matrix m(rows, cols);
+
+  ASSERT_FALSE(m.IsSquare());
+}
+
+TEST(TestMatrix, IsNotSquare2) {
+  const size_t rows = 0;
+  const size_t cols = 0;
+  rtb::Matrix m(rows, cols);
+
+  ASSERT_FALSE(m.IsSquare());
 }
