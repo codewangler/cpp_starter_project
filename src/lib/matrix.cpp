@@ -44,4 +44,99 @@ double& Matrix::operator()(size_t i, size_t j) {
 double Matrix::operator()(size_t i, size_t j) const {
   return elements_[i * cols_ + j];
 }
+
+/**
+ * @brief Overload operator+ to add a matrix to this one.
+ *
+ * @param other   The other matrix
+ * @return Matrix The result
+ */
+Matrix Matrix::operator+(const Matrix& other) const {
+  if (rows_ != other.rows_ || cols_ != other.cols_) {
+    throw std::invalid_argument("Cannot add matrices of different size");
+  }
+
+  Matrix m(rows_, cols_);
+  for (size_t k = 0; k < rows_ * cols_; k++) {
+    m.elements_[k] = elements_[k] + other.elements_[k];
+  }
+  return m;
+}
+
+/**
+ * @brief Overload operator- to subtract a matrix from this one.
+ *
+ * @param other   The other matrix
+ * @return Matrix The result
+ */
+Matrix Matrix::operator-(const Matrix& other) const {
+  if (rows_ != other.rows_ || cols_ != other.cols_) {
+    throw std::invalid_argument("Cannot subtract matrices of different size");
+  }
+
+  Matrix m(rows_, cols_);
+  for (size_t k = 0; k < rows_ * cols_; k++) {
+    m.elements_[k] = elements_[k] - other.elements_[k];
+  }
+  return m;
+}
+
+/**
+ * @brief Overload operator* to perform scalar multiplication.
+ *
+ * @param scalar   The multiplier
+ * @return Matrix  The result
+ */
+Matrix Matrix::operator*(const double& scalar) const {
+  Matrix m(rows_, cols_);
+  for (size_t k = 0; k < rows_ * cols_; k++) {
+    m.elements_[k] = elements_[k] * scalar;
+  }
+  return m;
+}
+
+/**
+ * @brief Transpose this mxn matrix. The result is an nxm matrix whose first row
+ * is the first column of this matrix etc.
+ *
+ * @return Matrix The transposed matrix.
+ */
+Matrix Matrix::Transpose() const {
+  Matrix m(cols_, rows_);
+
+  for (size_t i = 0; i < rows_; i++) {
+    for (size_t j = 0; j < cols_; j++) {
+      m(j, i) = elements_[i * cols_ + j];
+    }
+  }
+
+  return m;
+}
+
+/**
+ * @brief Calculate the dot product of two matrices. The matrices must be
+ * one-dimensional (either column or row vectors) and of the same size.
+ *
+ * @param other The other matrix.
+ * @return      The dot product.
+ */
+double Matrix::DotProduct(const Matrix& other) const {
+  if (!(rows_ == 1 || cols_ == 1)) {
+    throw std::invalid_argument("This matrix is not one-dimensional");
+  }
+  if (!(other.rows_ == 1 || other.cols_ == 1)) {
+    throw std::invalid_argument("The other matrix is not one-dimensional");
+  }
+  if (rows_ * cols_ != other.rows_ * other.cols_) {
+    throw std::invalid_argument("The matrices are not the same size");
+  }
+
+  double dot_product = 0.0;
+
+  for (size_t i = 0; i < rows_ * cols_; i++) {
+    dot_product += elements_[i] * other.elements_[i];
+  }
+
+  return dot_product;
+}
 }  // namespace rtb

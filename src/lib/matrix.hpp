@@ -23,6 +23,11 @@ class Matrix {
   [[nodiscard]] bool IsRowVector() const { return rows_ == 1; }
   [[nodiscard]] bool IsColVector() const { return cols_ == 1; }
   [[nodiscard]] bool IsSquare() const { return rows_ != 0 && rows_ == cols_; }
+  Matrix operator+(const Matrix& other) const;
+  Matrix operator-(const Matrix& other) const;
+  Matrix operator*(const double& scalar) const;
+  [[nodiscard]] Matrix Transpose() const;
+  [[nodiscard]] double DotProduct(const Matrix& other) const;
 
  private:
   size_t rows_;

@@ -771,3 +771,209 @@ TEST(TestMatrix, IsNotSquare2) {
 
   ASSERT_FALSE(m.IsSquare());
 }
+
+TEST(TestMatrix, Addition) {
+  const size_t rows = 9;
+  const size_t cols = 7;
+  rtb::Matrix b(rows, cols);
+  rtb::Matrix c(rows, cols);
+
+  for (size_t i = 0; i < rows; i++) {
+    for (size_t j = 0; j < cols; j++) {
+      b(i, j) = static_cast<double>(i) * cols + static_cast<double>(j);
+      c(i, j) = 2 * static_cast<double>(i) * cols + static_cast<double>(j);
+    }
+  }
+
+  rtb::Matrix a = b + c;
+
+  for (size_t i = 0; i < rows; i++) {
+    for (size_t j = 0; j < cols; j++) {
+      ASSERT_DOUBLE_EQ(a(i, j), b(i, j) + c(i, j));
+    }
+  }
+}
+
+TEST(TestMatrix, Addition2) {
+  const size_t rows = 9;
+  const size_t cols = 7;
+  rtb::Matrix b(rows, cols);
+  rtb::Matrix c(rows, cols);
+  rtb::Matrix d(rows, cols);
+
+  for (size_t i = 0; i < rows; i++) {
+    for (size_t j = 0; j < cols; j++) {
+      b(i, j) = static_cast<double>(i) * cols + static_cast<double>(j);
+      c(i, j) = 2 * static_cast<double>(i) * cols + static_cast<double>(j);
+      d(i, j) = 3 * static_cast<double>(i) * cols + static_cast<double>(j);
+    }
+  }
+
+  rtb::Matrix a = b + c + d;
+
+  for (size_t i = 0; i < rows; i++) {
+    for (size_t j = 0; j < cols; j++) {
+      ASSERT_DOUBLE_EQ(a(i, j), b(i, j) + c(i, j) + d(i, j));
+    }
+  }
+}
+
+TEST(TestMatrix, AdditionSizeMismatch) {
+  const size_t rows = 9;
+  const size_t cols = 7;
+  rtb::Matrix b(rows, cols);
+  rtb::Matrix c(rows + 1, cols);
+
+  ASSERT_THROW(rtb::Matrix a = b + c, std::invalid_argument);
+}
+
+TEST(TestMatrix, Subtraction) {
+  const size_t rows = 9;
+  const size_t cols = 7;
+  rtb::Matrix b(rows, cols);
+  rtb::Matrix c(rows, cols);
+
+  for (size_t i = 0; i < rows; i++) {
+    for (size_t j = 0; j < cols; j++) {
+      b(i, j) = static_cast<double>(i) * cols + static_cast<double>(j);
+      c(i, j) = 2 * static_cast<double>(i) * cols + static_cast<double>(j);
+    }
+  }
+
+  rtb::Matrix a = b - c;
+
+  for (size_t i = 0; i < rows; i++) {
+    for (size_t j = 0; j < cols; j++) {
+      ASSERT_DOUBLE_EQ(a(i, j), b(i, j) - c(i, j));
+    }
+  }
+}
+
+TEST(TestMatrix, Subtraction2) {
+  const size_t rows = 9;
+  const size_t cols = 7;
+  rtb::Matrix b(rows, cols);
+  rtb::Matrix c(rows, cols);
+  rtb::Matrix d(rows, cols);
+
+  for (size_t i = 0; i < rows; i++) {
+    for (size_t j = 0; j < cols; j++) {
+      b(i, j) = static_cast<double>(i) * cols + static_cast<double>(j);
+      c(i, j) = 2 * static_cast<double>(i) * cols + static_cast<double>(j);
+      d(i, j) = 3 * static_cast<double>(i) * cols + static_cast<double>(j);
+    }
+  }
+
+  rtb::Matrix a = b - c - d;
+
+  for (size_t i = 0; i < rows; i++) {
+    for (size_t j = 0; j < cols; j++) {
+      ASSERT_DOUBLE_EQ(a(i, j), b(i, j) - c(i, j) - d(i, j));
+    }
+  }
+}
+
+TEST(TestMatrix, SubtractionSizeMismatch) {
+  const size_t rows = 9;
+  const size_t cols = 7;
+  rtb::Matrix b(rows, cols);
+  rtb::Matrix c(rows + 1, cols);
+
+  ASSERT_THROW(rtb::Matrix a = b - c, std::invalid_argument);
+}
+
+TEST(TestMatrix, ScalarMultiplication) {
+  const size_t rows = 9;
+  const size_t cols = 7;
+  rtb::Matrix b(rows, cols);
+  const double scalar = 3.0;
+
+  for (size_t i = 0; i < rows; i++) {
+    for (size_t j = 0; j < cols; j++) {
+      b(i, j) = static_cast<double>(i) * cols + static_cast<double>(j);
+    }
+  }
+
+  rtb::Matrix a = b * scalar;
+
+  for (size_t i = 0; i < rows; i++) {
+    for (size_t j = 0; j < cols; j++) {
+      ASSERT_DOUBLE_EQ(a(i, j), b(i, j) * scalar);
+    }
+  }
+}
+
+TEST(TestMatrix, Transpose) {
+  rtb::Matrix m(2, 3);
+  m(0, 0) = 1;
+  m(0, 1) = 2;
+  m(0, 2) = 3;
+  m(1, 0) = 0;
+  m(1, 1) = -6;
+  m(1, 2) = 7;
+
+  rtb::Matrix t = m.Transpose();
+  ASSERT_EQ(m.Rows(), t.Cols());
+  ASSERT_EQ(m.Cols(), t.Rows());
+
+  ASSERT_EQ(m(0, 0), t(0, 0));
+  ASSERT_EQ(m(0, 1), t(1, 0));
+  ASSERT_EQ(m(0, 2), t(2, 0));
+  ASSERT_EQ(m(1, 0), t(0, 1));
+  ASSERT_EQ(m(1, 1), t(1, 1));
+  ASSERT_EQ(m(1, 2), t(2, 1));
+}
+
+TEST(TestMatrix, DotProduct) {
+  rtb::Matrix a(1, 3);
+  a(0, 0) = 1.0;
+  a(0, 1) = 3.0;
+  a(0, 2) = -5.0;
+  rtb::Matrix b(3, 1);
+  b(0, 0) = 4.0;
+  b(1, 0) = -2.0;
+  b(2, 0) = -1.0;
+
+  ASSERT_DOUBLE_EQ(3.0, a.DotProduct(b));
+  ASSERT_DOUBLE_EQ(3.0, b.DotProduct(a));
+}
+
+TEST(TestMatrix, DotProductNot1D) {
+  rtb::Matrix other(9, 1);
+  rtb::Matrix m(9, 2);
+
+  double dot_prod = 0.0;
+  ASSERT_THROW(dot_prod = m.DotProduct(other), std::invalid_argument);
+}
+
+TEST(TestMatrix, DotProductNot1D2) {
+  rtb::Matrix other(9, 1);
+  rtb::Matrix m(2, 9);
+
+  double dot_prod = 0.0;
+  ASSERT_THROW(dot_prod = m.DotProduct(other), std::invalid_argument);
+}
+
+TEST(TestMatrix, DotProductOtherNot1D) {
+  rtb::Matrix other(9, 2);
+  rtb::Matrix m(9, 1);
+
+  double dot_prod = 0.0;
+  ASSERT_THROW(dot_prod = m.DotProduct(other), std::invalid_argument);
+}
+
+TEST(TestMatrix, DotProductOtherNot1D2) {
+  rtb::Matrix other(9, 2);
+  rtb::Matrix m(1, 9);
+
+  double dot_prod = 0.0;
+  ASSERT_THROW(dot_prod = m.DotProduct(other), std::invalid_argument);
+}
+
+TEST(TestMatrix, DotProductSizeMissmatch) {
+  rtb::Matrix other(9, 1);
+  rtb::Matrix m(1, 7);
+
+  double dot_prod = 0.0;
+  ASSERT_THROW(dot_prod = m.DotProduct(other), std::invalid_argument);
+}
