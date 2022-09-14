@@ -28,6 +28,7 @@ class Matrix {
   Matrix operator*(const double& scalar) const;
   [[nodiscard]] Matrix Transpose() const;
   [[nodiscard]] double DotProduct(const Matrix& other) const;
+  [[nodiscard]] Matrix Multiply(const Matrix& other) const;
 
  private:
   size_t rows_;

@@ -977,3 +977,27 @@ TEST(TestMatrix, DotProductSizeMissmatch) {
   double dot_prod = 0.0;
   ASSERT_THROW(dot_prod = m.DotProduct(other), std::invalid_argument);
 }
+
+TEST(TestMatrix, Product) {
+  rtb::Matrix a(2, 3);
+  a(0, 0) = 2.0;
+  a(0, 1) = 3.0;
+  a(0, 2) = 4.0;
+  a(1, 0) = 1.0;
+  a(1, 1) = 0.0;
+  a(1, 2) = 0.0;
+  rtb::Matrix b(3, 2);
+  b(0, 0) = 0.0;
+  b(0, 1) = 1000.0;
+  b(1, 0) = 1.0;
+  b(1, 1) = 100.0;
+  b(2, 0) = 0.0;
+  b(2, 1) = 10.0;
+
+  rtb::Matrix product = a.Multiply(b);
+
+  ASSERT_DOUBLE_EQ(product(0, 0), 3.0);
+  ASSERT_DOUBLE_EQ(product(0, 1), 2340.0);
+  ASSERT_DOUBLE_EQ(product(1, 0), 0.0);
+  ASSERT_DOUBLE_EQ(product(1, 1), 1000.0);
+}

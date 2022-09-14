@@ -139,4 +139,30 @@ double Matrix::DotProduct(const Matrix& other) const {
 
   return dot_product;
 }
+
+/**
+ * @brief Multiply this matrix with another.
+ * 
+ * @param other   The other matrix
+ * @return Matrix The result
+ */
+Matrix Matrix::Multiply(const Matrix& other) const {
+  if (cols_ != other.rows_) {
+    throw std::invalid_argument(
+        "Number of rows in other matrix must equal the number of columns in "
+        "this");
+  }
+
+  rtb::Matrix product(rows_, other.cols_);
+  for (size_t i = 0; i < product.rows_; i++) {
+    for (size_t j = 0; j < product.cols_; j++) {
+      for (size_t k = 0; k < cols_; k++) {
+        product(i, j) +=
+            elements_[(i * cols_) + k] * other.elements_[j + (k * other.cols_)];
+      }
+    }
+  }
+
+  return product;
+}
 }  // namespace rtb
