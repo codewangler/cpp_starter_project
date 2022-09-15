@@ -25,10 +25,11 @@ class Matrix {
   [[nodiscard]] bool IsSquare() const { return rows_ != 0 && rows_ == cols_; }
   Matrix operator+(const Matrix& other) const;
   Matrix operator-(const Matrix& other) const;
-  Matrix operator*(const double& scalar) const;
+  Matrix operator*(double scalar) const;
   [[nodiscard]] Matrix Transpose() const;
   [[nodiscard]] double DotProduct(const Matrix& other) const;
   [[nodiscard]] Matrix Multiply(const Matrix& other) const;
+  [[nodiscard]] Matrix GetRow(size_t index) const;
 
  private:
   size_t rows_;

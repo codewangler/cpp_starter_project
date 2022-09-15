@@ -87,7 +87,7 @@ Matrix Matrix::operator-(const Matrix& other) const {
  * @param scalar   The multiplier
  * @return Matrix  The result
  */
-Matrix Matrix::operator*(const double& scalar) const {
+Matrix Matrix::operator*(double scalar) const {
   Matrix m(rows_, cols_);
   for (size_t k = 0; k < rows_ * cols_; k++) {
     m.elements_[k] = elements_[k] * scalar;
@@ -106,7 +106,7 @@ Matrix Matrix::Transpose() const {
 
   for (size_t i = 0; i < rows_; i++) {
     for (size_t j = 0; j < cols_; j++) {
-      m(j, i) = elements_[i * cols_ + j];
+      m(j, i) = (*this)(i, j);
     }
   }
 
@@ -164,5 +164,25 @@ Matrix Matrix::Multiply(const Matrix& other) const {
   }
 
   return product;
+}
+
+/**
+ * @brief Get a row from this matrix.
+ * 
+ * @param index   The index of the row.
+ * @return Matrix The result is a (1xn) row matrix.
+ */
+Matrix Matrix::GetRow(size_t index) const {
+  if (index >= rows_) {
+    throw std::invalid_argument(
+        "Row does not exist");
+  }
+
+  rtb::Matrix row(1, cols_);
+  for (size_t j = 0; j < cols_; j++) {
+    row(0, j) = (*this)(index, j);
+  }
+
+  return row;
 }
 }  // namespace rtb

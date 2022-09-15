@@ -1001,3 +1001,40 @@ TEST(TestMatrix, Product) {
   ASSERT_DOUBLE_EQ(product(1, 0), 0.0);
   ASSERT_DOUBLE_EQ(product(1, 1), 1000.0);
 }
+
+TEST(TestMatrix, GetRow) {
+  const size_t rows = 9;
+  const size_t cols = 7;
+  rtb::Matrix m(rows, cols);
+
+  for (size_t i = 0; i < rows; i++) {
+    for (size_t j = 0; j < cols; j++) {
+      m(i, j) = static_cast<double>(i) * cols + static_cast<double>(j);
+    }
+  }
+
+  const size_t index = 3;
+  rtb::Matrix row = m.GetRow(index);
+
+  ASSERT_EQ(1, row.Rows());
+  ASSERT_EQ(cols, row.Cols());
+
+  for (size_t k = 0; k < cols; k++) {
+    ASSERT_DOUBLE_EQ(row(0, k), m(index, k));
+  }
+}
+
+TEST(TestMatrix, GetInvalidRow) {
+  const size_t rows = 9;
+  const size_t cols = 7;
+  rtb::Matrix m(rows, cols);
+
+  for (size_t i = 0; i < rows; i++) {
+    for (size_t j = 0; j < cols; j++) {
+      m(i, j) = static_cast<double>(i) * cols + static_cast<double>(j);
+    }
+  }
+
+  const size_t index = 9;
+  ASSERT_THROW(rtb::Matrix row = m.GetRow(index), std::invalid_argument);
+}
