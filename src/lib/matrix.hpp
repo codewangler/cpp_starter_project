@@ -30,6 +30,8 @@ class Matrix {
   [[nodiscard]] double DotProduct(const Matrix& other) const;
   [[nodiscard]] Matrix Multiply(const Matrix& other) const;
   [[nodiscard]] Matrix GetRow(size_t index) const;
+  void AddRowToRow(size_t row_index, const Matrix& row_vector);
+  void SwapRows(size_t row_index_1, size_t row_index_2);
 
  private:
   size_t rows_;

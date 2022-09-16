@@ -1038,3 +1038,93 @@ TEST(TestMatrix, GetInvalidRow) {
   const size_t index = 9;
   ASSERT_THROW(rtb::Matrix row = m.GetRow(index), std::invalid_argument);
 }
+
+TEST(TestMatrix, AddRowToRow) {
+  rtb::Matrix a(2, 3);
+  a(0, 0) = 2.0;
+  a(0, 1) = 3.0;
+  a(0, 2) = 4.0;
+  a(1, 0) = 1.0;
+  a(1, 1) = 0.0;
+  a(1, 2) = 0.0;
+  rtb::Matrix b(1, 3);
+  b(0, 0) = 10.0;
+  b(0, 1) = 100.0;
+  b(0, 2) = 1000.0;
+
+  a.AddRowToRow(0, b);
+
+  ASSERT_DOUBLE_EQ(a(0, 0), 12.0);
+  ASSERT_DOUBLE_EQ(a(0, 1), 103.0);
+  ASSERT_DOUBLE_EQ(a(0, 2), 1004.0);
+}
+
+TEST(TestMatrix, AddNotRowToRow) {
+  rtb::Matrix a(2, 3);
+  a(0, 0) = 2.0;
+  a(0, 1) = 3.0;
+  a(0, 2) = 4.0;
+  a(1, 0) = 1.0;
+  a(1, 1) = 0.0;
+  a(1, 2) = 0.0;
+  rtb::Matrix b(2, 3);
+
+  ASSERT_THROW(a.AddRowToRow(0, b), std::invalid_argument);
+}
+
+TEST(TestMatrix, AddNotSameSizeRowToRow) {
+  rtb::Matrix a(2, 3);
+  a(0, 0) = 2.0;
+  a(0, 1) = 3.0;
+  a(0, 2) = 4.0;
+  a(1, 0) = 1.0;
+  a(1, 1) = 0.0;
+  a(1, 2) = 0.0;
+  rtb::Matrix b(1, 4);
+
+  ASSERT_THROW(a.AddRowToRow(0, b), std::invalid_argument);
+}
+
+TEST(TestMatrix, AddRowToInvalidRow) {
+  rtb::Matrix a(2, 3);
+  a(0, 0) = 2.0;
+  a(0, 1) = 3.0;
+  a(0, 2) = 4.0;
+  a(1, 0) = 1.0;
+  a(1, 1) = 0.0;
+  a(1, 2) = 0.0;
+  rtb::Matrix b(1, 3);
+
+  ASSERT_THROW(a.AddRowToRow(2, b), std::invalid_argument);
+}
+
+TEST(TestMatrix, SwapRows) {
+  rtb::Matrix a(2, 3);
+  a(0, 0) = 2.0;
+  a(0, 1) = 3.0;
+  a(0, 2) = 4.0;
+  a(1, 0) = 1.0;
+  a(1, 1) = 0.0;
+  a(1, 2) = 0.0;
+
+  a.SwapRows(0, 1);
+
+  ASSERT_DOUBLE_EQ(a(0, 0), 1.0);
+  ASSERT_DOUBLE_EQ(a(0, 1), 0.0);
+  ASSERT_DOUBLE_EQ(a(0, 2), 0.0);
+  ASSERT_DOUBLE_EQ(a(1, 0), 2.0);
+  ASSERT_DOUBLE_EQ(a(1, 1), 3.0);
+  ASSERT_DOUBLE_EQ(a(1, 2), 4.0);
+}
+
+TEST(TestMatrix, SwapInvalidRows) {
+  rtb::Matrix a(2, 3);
+  a(0, 0) = 2.0;
+  a(0, 1) = 3.0;
+  a(0, 2) = 4.0;
+  a(1, 0) = 1.0;
+  a(1, 1) = 0.0;
+  a(1, 2) = 0.0;
+
+  ASSERT_THROW(a.SwapRows(0, 2), std::invalid_argument);
+}

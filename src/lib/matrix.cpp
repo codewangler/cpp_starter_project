@@ -5,6 +5,8 @@
 
 #include "matrix.hpp"
 
+#include <math.h>
+
 #include <stdexcept>
 
 namespace rtb {
@@ -26,10 +28,10 @@ Matrix::Matrix(size_t rows, size_t cols)
  */
 double& Matrix::operator()(size_t i, size_t j) {
   if (i >= rows_) {
-    throw std::out_of_range("row");
+    throw std::out_of_range("operator(): row");
   }
   if (j >= cols_) {
-    throw std::out_of_range("column");
+    throw std::out_of_range("operator(): column");
   }
   return elements_[i * cols_ + j];
 }
@@ -53,7 +55,8 @@ double Matrix::operator()(size_t i, size_t j) const {
  */
 Matrix Matrix::operator+(const Matrix& other) const {
   if (rows_ != other.rows_ || cols_ != other.cols_) {
-    throw std::invalid_argument("Cannot add matrices of different size");
+    throw std::invalid_argument(
+        "operator+: Cannot add matrices of different size");
   }
 
   Matrix m(rows_, cols_);
@@ -71,7 +74,8 @@ Matrix Matrix::operator+(const Matrix& other) const {
  */
 Matrix Matrix::operator-(const Matrix& other) const {
   if (rows_ != other.rows_ || cols_ != other.cols_) {
-    throw std::invalid_argument("Cannot subtract matrices of different size");
+    throw std::invalid_argument(
+        "operator-: Cannot subtract matrices of different size");
   }
 
   Matrix m(rows_, cols_);
@@ -122,13 +126,16 @@ Matrix Matrix::Transpose() const {
  */
 double Matrix::DotProduct(const Matrix& other) const {
   if (!(rows_ == 1 || cols_ == 1)) {
-    throw std::invalid_argument("This matrix is not one-dimensional");
+    throw std::invalid_argument(
+        "DotProduct: This matrix is not one-dimensional");
   }
   if (!(other.rows_ == 1 || other.cols_ == 1)) {
-    throw std::invalid_argument("The other matrix is not one-dimensional");
+    throw std::invalid_argument(
+        "DotProduct: The other matrix is not one-dimensional");
   }
   if (rows_ * cols_ != other.rows_ * other.cols_) {
-    throw std::invalid_argument("The matrices are not the same size");
+    throw std::invalid_argument(
+        "DotProduct: The matrices are not the same size");
   }
 
   double dot_product = 0.0;
@@ -142,15 +149,15 @@ double Matrix::DotProduct(const Matrix& other) const {
 
 /**
  * @brief Multiply this matrix with another.
- * 
+ *
  * @param other   The other matrix
  * @return Matrix The result
  */
 Matrix Matrix::Multiply(const Matrix& other) const {
   if (cols_ != other.rows_) {
     throw std::invalid_argument(
-        "Number of rows in other matrix must equal the number of columns in "
-        "this");
+        "Multiply: Number of rows in other matrix must equal the number of "
+        "columns in this");
   }
 
   rtb::Matrix product(rows_, other.cols_);
@@ -168,14 +175,13 @@ Matrix Matrix::Multiply(const Matrix& other) const {
 
 /**
  * @brief Get a row from this matrix.
- * 
+ *
  * @param index   The index of the row.
  * @return Matrix The result is a (1xn) row matrix.
  */
 Matrix Matrix::GetRow(size_t index) const {
   if (index >= rows_) {
-    throw std::invalid_argument(
-        "Row does not exist");
+    throw std::invalid_argument("GetRow: Row does not exist");
   }
 
   rtb::Matrix row(1, cols_);
@@ -184,5 +190,53 @@ Matrix Matrix::GetRow(size_t index) const {
   }
 
   return row;
+}
+
+/**
+ * @brief Add the elements of a row vector to the corresponding elments of a row
+ * in this matrix.
+ *
+ * @param row_index   The row index in this matrix
+ * @param row_vector  The row vector to add
+ */
+void Matrix::AddRowToRow(size_t row_index, const Matrix& row_vector) {
+  if (!row_vector.IsRowVector()) {
+    throw std::invalid_argument("AddToRow: Not a row vector");
+  }
+  if (row_vector.cols_ != cols_) {
+    throw std::invalid_argument("AddToRow: Column count mismatch");
+  }
+  if (row_index >= rows_) {
+    throw std::invalid_argument("AddRow: Invalid row index");
+  }
+
+  size_t offset = row_index * cols_;
+  for (size_t j = 0; j < cols_; j++) {
+    elements_[offset + j] += row_vector.elements_[j];
+  }
+}
+
+/**
+ * @brief Swap the elements of one row with the elements of another row.
+ *
+ * @param row_index_1 The index of the first row
+ * @param row_index_2 The index of the second row
+ */
+void Matrix::SwapRows(size_t row_index_1, size_t row_index_2) {
+  if (row_index_1 >= rows_ || row_index_2 >= rows_) {
+    throw std::invalid_argument("SwapRows: Invalid row index");
+  }
+  if (row_index_1 == row_index_2) {
+    return;
+  }
+
+  size_t offset_1 = row_index_1 * cols_;
+  size_t offset_2 = row_index_2 * cols_;
+  double temp = 0.0;
+  for (size_t j = 0; j < cols_; j++) {
+    temp = elements_[offset_1 + j];
+    elements_[offset_1 + j] = elements_[offset_2 + j];
+    elements_[offset_2 + j] = temp;
+  }
 }
 }  // namespace rtb
